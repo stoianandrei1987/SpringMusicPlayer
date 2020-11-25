@@ -4,7 +4,7 @@ const url='http://localhost:8080/getjsonarray';
 Http.open("GET", url, true);
 Http.send();
 
-Http.onload = (e) => {
+Http.onloadend = (e) => {
   
 
 songList = JSON.parse(Http.responseText);
