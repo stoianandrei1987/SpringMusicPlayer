@@ -1,5 +1,8 @@
 package ro.andreistoian.SpringMusicPlayer.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -9,36 +12,39 @@ import java.util.List;
 
 @Entity
 @Table(name = "playlists")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Playlist {
 
     @Id
     @Column(name = "uid")
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    String id;
+    private String id;
 
     @Column(name = "name")
-    String name;
+    private String name;
 
     @Column(name = "description")
-    String description;
+    private String description;
 
     @Column(name = "year")
-    Integer year;
+    private Integer year;
 
     @CreationTimestamp
     @Column(name = "created_at")
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "user_uid",referencedColumnName = "uuid", nullable = false)
-    User user;
+    private User user;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "songs_playlist",
             joinColumns = @JoinColumn(name = "playlist_uid"),
             inverseJoinColumns = @JoinColumn(name = "song_uid"))
-    List<FileDB> songs;
+    private List<FileDB> songs;
 
     public Playlist(String name, String description, Integer year, User user) {
         this.name = name;

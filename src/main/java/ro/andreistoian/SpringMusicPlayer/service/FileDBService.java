@@ -1,21 +1,32 @@
 package ro.andreistoian.SpringMusicPlayer.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ro.andreistoian.SpringMusicPlayer.models.FileDB;
 import ro.andreistoian.SpringMusicPlayer.models.FileResponse;
 import ro.andreistoian.SpringMusicPlayer.repository.FileDBRepository;
+import ro.andreistoian.SpringMusicPlayer.repository.PlaylistRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
+@Slf4j
+//@Transactional(readOnly = true, noRollbackFor = {SQLNonTransientConnectionException.class, GenericJDBCException.class})
+@Qualifier("fileDBService")
+
 public class FileDBService {
 
     @Autowired
     FileDBRepository repo;
+
+    @Autowired
+    PlaylistRepository pRepo;
 
     @Value("${andrei.this-ip}")
     private String MY_IP;
@@ -50,12 +61,25 @@ public class FileDBService {
         return repo.getOne(id).getArt();
     }
 
-    public List<FileResponse> getJson() {
-        return repo.findAll().stream().map(entry -> {
+    public List<FileResponse> getJson(String s) {
+
+
+        Stream<FileDB> stream;
+        if (s.equals("")) {
+            stream = repo.findAll().stream();
+
+        } else {
+            stream = pRepo.findById(s).get().getSongs().stream();
+        }
+
+        return stream.map(entry -> {
 
             String fileUri, imgUri;
 
             if (!RUN_ON_DOCKER) {
+
+
+
                 fileUri = ServletUriComponentsBuilder
                         .fromCurrentContextPath()
 
@@ -66,7 +90,7 @@ public class FileDBService {
 
                 imgUri = ServletUriComponentsBuilder
                         .fromCurrentContextPath()
-                        .fromPath("http:/" + MY_IP)
+                       // .fromPath("http://" + MY_IP)
                         .path("/files_img/")
                         .path(entry.getId())
                         .toUriString() + "/image.jpeg";
@@ -84,5 +108,7 @@ public class FileDBService {
                 return new FileResponse(track, artist, entry.getAlbum(), fileUri, imgUri, VISUALIZATION);
             } else return new FileResponse(entry.getName(), "", entry.getAlbum(), fileUri, imgUri, VISUALIZATION);
         }).collect(Collectors.toList());
+
+
     }
 }

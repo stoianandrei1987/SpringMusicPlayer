@@ -12,28 +12,29 @@
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-dark">
-    
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-  
+
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <form id="login-form" class="form-inline my-2 my-lg-0">
-        <li class="nav-item active nlg-stuff">
-          <label class="my-2" for="u_name">Username : </label>
-        </li>
-        <li class="nav-item active nlg-stuff">
-          <input class="form-control ml-sm-2 px-0" type="text" id="u_name" name="u_name"></input>
-        </li>
-        <li class="nav-item active nlg-stuff">
-          <label class="my-2" for="password">Password : </label>
-        </li>
-        <li class="nav-item active nlg-stuff">
-          <input class="form-control ml-sm-2 px-0 " type="password" id="lgi-password" name="lgi_password"></label>
-        </li>
-        <button class="btn btn-outline-success my-2 my-sm-0 nlg-stuff" id="search-btn" type="submit" onclick="fireLogin()">Login</button>
-      </form>
+          <li class="nav-item active nlg-stuff">
+            <label class="my-2" for="u_name">Username : </label>
+          </li>
+          <li class="nav-item active nlg-stuff">
+            <input class="form-control ml-sm-2 px-0" type="text" id="u_name" name="u_name"></input>
+          </li>
+          <li class="nav-item active nlg-stuff">
+            <label class="my-2" for="password">Password : </label>
+          </li>
+          <li class="nav-item active nlg-stuff">
+            <input class="form-control ml-sm-2 px-0 " type="password" id="lgi-password" name="lgi_password"></label>
+          </li>
+          <button class="btn btn-outline-success my-2 my-sm-0 nlg-stuff" id="login-btn" type="submit">Login</button>
+        </form>
         <li class="nav-item active lgi-link">
           <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
         </li>
@@ -41,22 +42,27 @@
           <a class="nav-link" href="#">Link</a>
         </li>
         <li class="nav-item dropdown lgi-link">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Dropdown
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Playlists
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
+            <div class="dropdown-item" id="dropdown-usernmae-text">My playlists</div>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a>
+            <div class="dropdown-playlists-names">
+             
+            </div>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Edit my playlists...</a>
           </div>
         </li>
         <li class="nav-item lgi-link">
-          <a class="nav-link" href="#" onclick="hideLoggedInBtns()">Logout</a>
+          <a class="nav-link" href="/logout">Logout</a>
         </li>
       </ul>
       <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-3" id="search-text-field" type="search" placeholder="Search" aria-label="Search">
+        <input class="form-control mr-sm-3" id="search-text-field" type="search" placeholder="Search"
+          aria-label="Search">
         <button class="btn btn-outline-success my-2 my-sm-0" id="search-btn" type="submit">Search</button>
       </form>
     </div>
@@ -64,6 +70,18 @@
 
   <div id="whole-player">
 
+
+
+    <div id="centered-welcome-text">
+
+      <span id="welcome-bg">
+        Welcome to howler!
+      </span>
+      <br>
+      <span id="welcome-sm">
+        Listen to your favorite tracks!
+      </span>
+    </div>
 
     <!-- Top Info -->
     <div id="title">

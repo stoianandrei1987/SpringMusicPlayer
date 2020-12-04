@@ -23,6 +23,9 @@ public class User {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     String id;
 
+    @Column(name = "username")
+    String userName;
+
     @Column(name = "first_name")
     String firstName;
 
@@ -44,7 +47,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     Set<Role> roles;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<Playlist> playlists;
 
     public User(String firstName, String secondName, String email, String password, Integer age) {
