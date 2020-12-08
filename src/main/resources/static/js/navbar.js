@@ -10,7 +10,7 @@ function makeRequest() {
 
   var songList;
   const Http = new XMLHttpRequest();
-  const url = 'http://localhost:8080/getjsonarray';
+  const url = 'getjsonarray';
   Http.open("GET", url, true);
   Http.send();
 
@@ -46,7 +46,7 @@ function loadNewPlaylist(playlistId) {
 
     let songList;
     let req = new XMLHttpRequest();
-    let url = 'http://localhost:8080/listsongsfrompl?pid=' + playlistId;
+    let url = 'listsongsfrompl?pid=' + playlistId;
     req.open("GET", url, true);
     req.send();
     waveform.innerHTML = '';
@@ -78,6 +78,7 @@ function loadNewPlaylist(playlistId) {
       }
       player.switchPlaylist(songObjArray);
       loadEverything();
+      loadWaveAndStart();
       // player.playlist = songObjArray;
       // player.index = 0;
       // player = new Player(songObjArray);
@@ -102,7 +103,7 @@ $("#login-form").on("submit", function (e) {
 
 
   const Http = new XMLHttpRequest();
-  const url = "http://localhost:8080/login";
+  const url = "login";
   Http.open("POST", url, true);
   Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   Http.send(dataString);

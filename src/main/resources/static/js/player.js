@@ -10,7 +10,7 @@
 
 // Cache references to DOM elements.
 
-var elms = ['track', 'timer', 'duration', 'playBtn', 'pauseBtn', 'prevBtn', 'nextBtn', 'playlistBtn', 'volumeBtn', 'progress', 'bar', 'wave', 'loading', 'playlist', 'list', 'volume', 'barEmpty', 'barFull', 'sliderBtn', 'whole-player'];
+var elms = ['track', 'timer', 'duration', 'playBtn', 'pauseBtn', 'prevBtn', 'nextBtn', 'playlistBtn', 'volumeBtn', 'progress', 'bar', 'wave', 'loading', 'playlist', 'list', 'volume', 'barEmpty', 'barFull', 'sliderBtn', 'whole-player', 'waveform'];
 elms.forEach(function (elm) {
   window[elm] = document.getElementById(elm);
 });
@@ -21,6 +21,7 @@ var player;
 var songObjArray = [];
 var sound;
 var bindingsDone = false;
+var wave = {};
 
 /*
 
@@ -95,6 +96,7 @@ Player.prototype = {
           bar.style.display = 'none';
           pauseBtn.style.display = 'block';
           loading.style.display = 'none';
+          progress.style.display = 'block'
         },
         onload: function () {
           // Start the wave animation.
@@ -291,7 +293,7 @@ Player.prototype = {
     var sound = self.playlist[self.index].howl;
 
     // Determine our current seek position.
-    if ((sound != null && sound.seek != null) || sound._sounds == null || sound._sounds[0]._id == null) {
+    if ((sound != null && sound.seek != null) || sound._sounds != null || sound._sounds[0]._id != null) {
       var seek = sound.seek() || 0;
       timer.innerHTML = self.formatTime(Math.round(seek));
       progress.style.width = (((seek / sound.duration()) * 100) || 0) + '%';
@@ -383,24 +385,27 @@ var loadEverything = function () {
       player.pause();
     });
 
-    /*
+    
     prevBtn.addEventListener('click', function () {
       player.skip('prev');
     });
     nextBtn.addEventListener('click', function () {
       player.skip('next');
     });
-    */
+    
 
+    /*
     prevBtn.onclick = () => player.skip('prev');
     nextBtn.onclick = () => player.skip('next');
     waveform.onclick = (event) => player.seek(event.clientX / window.innerWidth);
     playlistBtn.onclick = () => player.togglePlaylist();
     playlist.onclick = () => player.togglePlaylist();
     volumeBtn.onclick = () => player.toggleVolume();
+    volume.onclick = () => player.toggleVolume();
 
+    */
 
-    /*
+    
 
     waveform.addEventListener('click', function (event) {
       player.seek(event.clientX / window.innerWidth);
@@ -418,14 +423,14 @@ var loadEverything = function () {
       player.toggleVolume();
     });
 
-    */
+    
 
     barEmpty.onclick = (event) => {
       var per = event.layerX / parseFloat(barEmpty.scrollWidth);
       player.volume(per);
     }
 
-    if(!bindingsDone) {
+    if (true) {
 
       bindingsDone = true;
 
@@ -446,12 +451,17 @@ var loadEverything = function () {
       volume.addEventListener('touchend', function () {
         window.sliderDown = false;
       });
+      //wave.addEventListener('click', function(event) {
+      //  console.log("click on : " + event.clientX);
+      //})
+
 
     }
 
   }
 
   bindingsDone = true;
+  
   var move = function (event) {
     if (window.sliderDown) {
       var x = event.clientX || event.touches[0].clientX;
@@ -466,16 +476,7 @@ var loadEverything = function () {
   volume.addEventListener('touchmove', move);
 
   // Setup the "waveform" animation.
-  var wave = new SiriWave({
-    container: waveform,
-    width: window.innerWidth,
-    height: window.innerHeight * 0.3,
-    cover: true,
-    speed: 0.03,
-    amplitude: 0.7,
-    frequency: 2
-  });
-  wave.start();
+
 
   // Update the height of the wave animation.
   // These are basically some hacks to get SiriWave.js to do what we want.
@@ -505,5 +506,21 @@ var loadEverything = function () {
 
 }
 
+var loadWaveAndStart = () => {
 
+  wave = new SiriWave({
+    container: waveform,
+    width: window.innerWidth,
+    height: window.innerHeight * 0.3,
+    cover: true,
+    speed: 0.03,
+    amplitude: 0.7,
+    frequency: 2
+  });
+
+  wave.start();
+
+}
+
+loadWaveAndStart();
 

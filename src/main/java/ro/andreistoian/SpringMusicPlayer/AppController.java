@@ -2,6 +2,8 @@ package ro.andreistoian.SpringMusicPlayer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -80,7 +82,9 @@ public class AppController {
 
 
     @GetMapping("/files/{id}")
-    public ResponseEntity<byte[]> getFile(@PathVariable String id) {
+    @ResponseBody
+    @CrossOrigin
+    public ResponseEntity<Resource> getFile(@PathVariable String id) {
         //FileDB fileDB = service.getFile(id);
         byte[] data = service.getData(id);
         /*
@@ -96,8 +100,13 @@ public class AppController {
 
          */
 
+
+
+        Resource r = new ByteArrayResource(data);
         return ResponseEntity.ok().contentType(new MediaType("audio", "mp3")).
-                contentLength(data.length).body(data);
+                contentLength(data.length).body(r);
+
+
     }
 
     @GetMapping("/files_img/{id}/image.jpeg")
