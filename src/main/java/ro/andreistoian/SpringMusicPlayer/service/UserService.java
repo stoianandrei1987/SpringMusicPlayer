@@ -7,9 +7,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ro.andreistoian.SpringMusicPlayer.models.Role;
 import ro.andreistoian.SpringMusicPlayer.models.User;
 import ro.andreistoian.SpringMusicPlayer.models.UserDto;
+import ro.andreistoian.SpringMusicPlayer.repository.RoleRepository;
 import ro.andreistoian.SpringMusicPlayer.repository.UserRepository;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 @Service
 @Slf4j
@@ -17,6 +22,9 @@ public class UserService {
 
     @Autowired
     UserRepository repo;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     public void saveUser(User user) {
         repo.save(user);
@@ -46,11 +54,12 @@ public class UserService {
 
         User user = new User("Andrei", "Stoian",
                 "stoianandrei@yahoo.com", encoder.encode("pass"), 33);
+        user.getRoles().add(roleRepository.findRoleByRoleName("USER"));
         repo.save(user);
         return user;
     }
 
-    @Transactional
+    //@Transactional
     public User registerNewUserAccount(UserDto userDto)
             throws UserAlreadyExistException {
 
@@ -64,6 +73,8 @@ public class UserService {
             registered = new User(userDto.getUserName(), userDto.getFirstName(),
                     userDto.getLastName(), userDto.getEmail(), new BCryptPasswordEncoder().encode(userDto.
                     getPassword()), userDto.getAge());
+            registered.setRoles(new HashSet<Role>());
+            registered.getRoles().add(roleRepository.findRoleByRoleName("USER"));
             repo.save(registered);
 
         }

@@ -1,12 +1,16 @@
 package ro.andreistoian.SpringMusicPlayer.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
 @Entity
 @Table(name = "roles")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Role {
 
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,5 +19,9 @@ public class Role {
 
     @Column(name = "role_name")
     private String roleName;
+
+    public Role(String roleName) {
+        this.roleName = roleName;
+    }
 
 }
