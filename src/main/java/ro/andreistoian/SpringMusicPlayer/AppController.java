@@ -9,15 +9,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ro.andreistoian.SpringMusicPlayer.models.FileDB;
-import ro.andreistoian.SpringMusicPlayer.models.Playlist;
-import ro.andreistoian.SpringMusicPlayer.models.ResponseMessage;
+import org.springframework.web.servlet.ModelAndView;
+import ro.andreistoian.SpringMusicPlayer.models.*;
 import ro.andreistoian.SpringMusicPlayer.service.FileDBService;
 import ro.andreistoian.SpringMusicPlayer.service.PlaylistService;
+import ro.andreistoian.SpringMusicPlayer.service.UserAlreadyExistException;
+import ro.andreistoian.SpringMusicPlayer.service.UserService;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.validation.Valid;
 
 
 @Controller
@@ -30,6 +34,9 @@ public class AppController {
 
     @Autowired
     PlaylistService playlistService;
+
+    @Autowired
+    UserService userService;
 
     @GetMapping("/main")
     public String main(Model model) {
@@ -80,6 +87,32 @@ public class AppController {
         }
     }
 
+    @GetMapping("register")
+    public String loadRegisterPage(Model model) {
+
+        UserDto userDto = new UserDto();
+        model.addAttribute("user", userDto);
+        return "register";
+    }
+
+    @PostMapping("/register")
+    @CrossOrigin
+    public ModelAndView registerUserAccount
+            (@ModelAttribute("user") @Valid UserDto userDto,
+             HttpServletRequest request, Errors errors) {
+
+        try {
+            User registered = userService.registerNewUserAccount(userDto);
+        } catch (UserAlreadyExistException uaeEx) {
+            ModelAndView mav = new ModelAndView("register-failure");
+            mav.addObject("message", "An account for that username/email already exists.");
+            return mav;
+        }
+
+        return new ModelAndView("register-success");
+        // rest of the implementation
+    }
+
 
     @GetMapping("/files/{id}")
     @ResponseBody
@@ -101,7 +134,6 @@ public class AppController {
          */
 
 
-
         Resource r = new ByteArrayResource(data);
         return ResponseEntity.ok().contentType(new MediaType("audio", "mp3")).
                 contentLength(data.length).body(r);
@@ -110,16 +142,12 @@ public class AppController {
     }
 
     @GetMapping("/files_img/{id}/image.jpeg")
-    public ResponseEntity<byte[]> getFilesImg(@PathVariable String id, HttpServletResponse response) {
+    public ResponseEntity<Resource> getFilesImg(@PathVariable String id, HttpServletResponse response) {
         byte[] albumArt = service.getAlbumArt(id);
-        response.setContentType("image/jpeg");
-        response.setContentLength(albumArt.length);
-        try {
-            response.getOutputStream().write(albumArt);
-        } catch (IOException e) {
-        }
+        return ResponseEntity.ok().contentType(new MediaType("image", "jpeg")).
+                contentLength(albumArt.length).body(new ByteArrayResource(albumArt));
 
-        return ResponseEntity.ok().build();
+
     }
 
 }

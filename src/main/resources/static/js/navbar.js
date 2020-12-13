@@ -38,6 +38,8 @@ function makeRequest() {
   }
 }
 
+$('#add-playlist').click(function() {document.getElementById('modal-window').style.display = 'block';});
+
 function loadNewPlaylist(playlistId) {
 
   if (player != null) {
