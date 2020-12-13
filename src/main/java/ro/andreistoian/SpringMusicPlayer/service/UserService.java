@@ -73,8 +73,8 @@ public class UserService {
             registered = new User(userDto.getUserName(), userDto.getFirstName(),
                     userDto.getLastName(), userDto.getEmail(), new BCryptPasswordEncoder().encode(userDto.
                     getPassword()), userDto.getAge());
-            registered.setRoles(new HashSet<Role>());
-            registered.getRoles().add(roleRepository.findRoleByRoleName("USER"));
+            registered.setRoles(new HashSet<Role>(Arrays.asList(roleRepository.findRoleByRoleName("USER"))));
+            //registered.getRoles().add(roleRepository.findRoleByRoleName("USER"));
             repo.save(registered);
 
         }
